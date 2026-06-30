@@ -1,0 +1,43 @@
+---
+description: 用户只让 Agent 改代码；Loops 全自动收尾
+alwaysApply: true
+---
+
+# Agent-Only · 用户不操作
+
+## 用户约定
+
+- **所有变更只由 Agent 完成**；用户不跑命令、不看报告、不点 accept。
+- 结论写进 `【daily/phase1_journal.md】`；仅 BLOCKER 简要告知用户。
+- 会话失忆 → 靠本规则 + `MEMORY.md` + `memory/YYYY-MM-DD.md`。
+
+## Agent 改代码后 — 自动收尾
+
+1. `【tools/strategy_grill.py --force】` → `【tools/health_check.py】`
+2. 通过则 `--pipeline` 或 `--accept` 刷新基线
+3. 更新 process journal + `memory/YYYY-MM-DD.md` 一行
+4. grill FAIL → **自己修**，不要让用户执行命令
+
+## Pipeline 末尾（cron 已挂则 Agent 可等日频）
+
+- strategy_grill --pipeline
+- health_check --soft
+- phase1_process_journal
+- 【deploy 脚本】
+
+## 架构红线（按项目填写）
+
+- 【分轨：个股 / ETF】
+- 【Phase1 冻结参数列表】
+- 复盘 **只读**，样本 &lt;【N】 不调权重
+
+## 策略编辑门禁（可选）
+
+- `.cursor/hooks.json` + `tools/agent_gate_hook.py`
+- 受保护路径与 `strategy_grill.WATCHED` 同步
+
+## 汇报原则
+
+- **正常**：不必打扰用户
+- **异常**：什么坏了 + Agent 如何处理
+- **禁止**：向用户列出 shell 命令

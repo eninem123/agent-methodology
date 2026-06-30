@@ -1,0 +1,52 @@
+---
+description: 【项目名】证据优先级 P0/P1/P2（证据由 pipeline 自动产出）
+alwaysApply: true
+---
+
+# 证据优先级（改策略/执行前必读）
+
+> 对齐 [agent-methodology](https://github.com/eninem123/agent-methodology)  
+> **【零运维约定：主人不手动交材料；P0 由 run_xxx_pipeline 刷新】**
+
+## P0 — 必须先读（当日真相）
+
+| 证据 | 路径 | 用途 |
+|------|------|------|
+| 【持仓/状态】 | `【data/portfolio.json】` | 【PnL、持仓】 |
+| 【路由/门禁】 | `【daily/strategy_routing.json】` | open_mode、can_open_new |
+| 【市场】 | `【daily/market_context.json】` | regime、风险灯 |
+| 【验证冲刺】 | `【daily/phase1_validation.json】` | 达标项 |
+| 用户 @ 文件 | 对话中显式引用 | 覆盖磁盘默认 |
+
+**冲突**：P0 矛盾 → 以【portfolio + routing】为准，记入 `memory/YYYY-MM-DD.md`。
+
+## P1 — 改策略/信号/执行时读
+
+| 证据 | 路径 |
+|------|------|
+| 【主配置】 | `【position_config_v4.json】` |
+| 【候选】 | `【candidate_stocks.json】` |
+| 【信号】 | `【unified_signals.json】` |
+
+## P2 — 辅助（不替代 P0/P1）
+
+| 证据 | 路径 |
+|------|------|
+| 已确认教训 | `memory/lessons.md` |
+| 信号复盘 | `【daily/signal_postmortem.json】` |
+| 烤机/健康 | `daily/strategy_grill.json`、`daily/health_check.json` |
+
+## 门卫严重级别
+
+| 级别 | 来源 | 含义 |
+|------|------|------|
+| **BLOCKER** | health critical、grill FAIL | Agent 必须修完再汇报 |
+| **SHOULD** | health warning、grill WARN | 记入日记 |
+| **INFO** | 全部 PASS | 不必打扰主人 |
+
+## 改代码前 checklist
+
+1. 读 P0（至少 routing + portfolio）
+2. 读 `memory/lessons.md` 相关条目
+3. 改完跑 grill + health
+4. 新教训 → `memory/lessons.md`（status: confirmed）

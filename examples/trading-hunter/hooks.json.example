@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": ".cursor/hooks/agent_gate_pre_edit.py",
+        "matcher": "Write|StrReplace",
+        "failClosed": false
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/agent_gate_post_edit.py"
+      }
+    ]
+  }
+}

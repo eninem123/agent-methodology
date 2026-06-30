@@ -401,6 +401,62 @@ Skill 要求：
 | 教训 | lessons 模板 + KB | — | — | — |
 | MCP | AGENTS §6 授权 | — | 查询 LIMIT | — |
 | 老项目改造 | 分阶段 AGENTS | 现有 readme | 最高频 1 条 | 1 个 |
+| 量化/交易 | AGENTS + grill + health | pipeline JSON | agent_gate_hook | — |
+
+---
+
+## 15. 场景 K：量化 / 交易策略（猎手模式）
+
+> 案例全文：[`README-trading-hunter.md`](README-trading-hunter.md) · Loops 详解：[`docs/04-agent-loops-zero-ops.md`](docs/04-agent-loops-zero-ops.md)
+
+与数仓场景的核心差异：**P0 证据由日频 pipeline 自动写盘**，用户零运维（不交 model_csv、不点 accept）。
+
+```markdown
+# 任务：为【量化/模拟交易】项目搭建 Agent 协作体系
+
+## 项目画像
+
+- 日频/盘中 pipeline 已存在或待建：【run_trading_pipeline.sh】
+- 用户约定：零运维，仅 BLOCKER 汇报；Phase1 验证期冻结【门禁/阈值列表】
+- 分轨要求：【如个股 vs ETF 不可混池】
+
+## 必须产出
+
+1. `AGENTS.md`（参考 AGENTS-trading-hunter.md）
+   - P0：portfolio、routing、market_context、phase1_validation（pipeline 刷新）
+   - 改后收尾：grill → health → journal → lessons
+
+2. `.cursor/rules/evidence-priority.mdc` + `agent-loops-workflow.mdc`
+   （模板见 examples/trading-hunter/）
+
+3. `tools/strategy_grill.py`
+   - WATCHED 关键路径 SHA256
+   - --check / --force / --pipeline（通过自动 accept 基线）
+   - verdict: PASS | WARN | FAIL
+
+4. `tools/health_check.py`
+   - severity: BLOCKER | SHOULD | INFO
+
+5. `tools/signal_postmortem.py`（可选）
+   - 分桶命中率；observe_only 直至 verified≥【N】
+
+6. `memory/lessons.md`（draft → confirmed）
+
+7. （推荐）`tools/agent_gate_hook.py` + `.cursor/hooks.json`
+   - preToolUse 拦截 WATCHED 路径直至 grill PASS
+   - 借鉴 SCALE Shield，不必引入完整 SCALE Engine
+
+## Pipeline 末尾串联
+
+signal_postmortem → strategy_grill --pipeline → health_check --soft
+→ phase1_process_journal → deploy
+
+## 验收
+
+- 改 WATCHED 内文件 → Hook 拦截 → grill 通过后解除
+- grill FAIL 时 Agent 自修，不向用户列 shell 命令
+- 正常日频运行后 P0 JSON mtime 为当日
+```
 
 ---
 
@@ -413,7 +469,7 @@ Skill 要求：
 
 ---
 
-*文档版本：2026-06-11 · 随 企业数据平台 实践更新*
+*文档版本：2026-06-30 · 随 企业数据平台 + 猎手交易 实践更新*
 
 ---
 

@@ -133,10 +133,13 @@ PR 提交后 → Reviewer 独立核验 → 分类标注问题
 | 竞赛模式 | agent-methodology 实现 | 文件位置 |
 |----------|------------------------|----------|
 | Solver/Verifier 分离 | AI 生成 + 门卫校验 | AGENTS §0, tools/ |
-| 分类标注 | BLOCKER/SHOULD/QUESTION | .cursor/skills/code-review/ |
+| 分类标注 | BLOCKER/SHOULD/QUESTION | .cursor/skills/code-review/ · health_check |
 | 逐步核验 | 逐字段检查 model_csv | tools/warehouse_pre_edit_guard.py |
+| 逐步核验（交易） | WATCHED 指纹 + 单测 | tools/strategy_grill.py |
 | 不修改只审计 | 门卫只报错不修代码 | tools/ 设计原则 |
 | 交叉验证 | 行数/金额/明细抽样 | warehouse_on_demand.md §5 |
+| 交叉验证（交易） | 信号 N 日命中率分桶 | tools/signal_postmortem.py |
+| Hook 硬拦截 | exit 2 阻断编辑 | tools/agent_gate_hook.py |
 
 ---
 

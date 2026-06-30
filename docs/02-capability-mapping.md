@@ -13,22 +13,26 @@
 
 ## 关键映射表
 
-| 技术点 | 企业数据平台 路径 | 优先级 |
-|--------|----------------|--------|
-| MCP 工具 | gpustack MCP | P0 - 生产查数 |
-| 分层规则 | AGENTS.md | P0 - 索引层核心 |
-| 结构化门禁 | warehouse_pre_edit_guard.py | P0 - 改表前必跑 |
-| Cursor Hook | .cursor/hooks.json | P0 - 自动触发 |
-| TF-IDF 知识库 | local_knowledge_model/ | P1 - 教训检索 |
-| 场景 Skill | .cursor/skills/ | P1 - 能力扩展 |
-| Bayesian 决策 | yao-bayesian-skill/ | P2 - 不确定决策 |
+| 技术点 | 企业数据平台 路径 | 猎手交易 路径 | 优先级 |
+|--------|----------------|--------------|--------|
+| MCP 工具 | gpustack MCP | —（按需行情 API） | P0 - 生产查数 |
+| 分层规则 | AGENTS.md | AGENTS.md + rules/*.mdc | P0 - 索引层核心 |
+| 结构化门禁 | warehouse_pre_edit_guard.py | strategy_grill + agent_gate_hook | P0 - 改关键文件前 |
+| Cursor Hook | .cursor/hooks.json | .cursor/hooks.json | P0 - 自动触发 |
+| 集成验收 | — | health_check.py | P0 - BLOCKER 分级 |
+| 业务复盘 | SQL 抽样 | signal_postmortem.py | P1 - 只读观察 |
+| TF-IDF 知识库 | local_knowledge_model/ | — | P1 - 教训检索 |
+| 教训库 | ai_learning/lessons_learned/ | memory/lessons.md | P1 - 闭环 |
+| 场景 Skill | .cursor/skills/ | — | P1 - 能力扩展 |
+| Bayesian 决策 | yao-bayesian-skill/ | — | P2 - 不确定决策 |
 
 ## 自动化闭环
 
 ```
-改代码 → Hook 触发 → 门卫校验 → 通过/拦截
-                ↓
-        教训沉淀 → KB 索引 → 下次命中
+数仓：改代码 → Hook → guard 校验 → 教训 → KB
+
+交易：改代码 → Hook(agent_gate) → grill + health → postmortem → lessons
+      日频 pipeline 写 P0 JSON → Agent 只读磁盘
 ```
 
 ## 数据流图

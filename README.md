@@ -101,13 +101,21 @@ agent-methodology/
 │   ├── knowledge_base_workflow.md             # 知识库主链路
 │   └── README-企业数据平台.md                    # 项目结构说明
 │
+├── 📖 实战文档（来自 猎手模拟交易）
+│   ├── README-trading-hunter.md               # 量化/交易 Agent 化案例
+│   ├── AGENTS-trading-hunter.md               # 交易场景 AGENTS 模板
+│   └── examples/trading-hunter/               # rules / hooks / lessons 模板
+│
 ├── 📊 架构参考
 │   └── docs/
 │       ├── 01-routing-architecture.md         # 任务路由架构演进
-│       └── 02-capability-mapping.md           # 能力对应表
+│       ├── 02-capability-mapping.md           # 能力对应表
+│       ├── 03-verification-pattern.md         # 验证闭环模式
+│       └── 04-agent-loops-zero-ops.md         # Loops + 零运维（pipeline 产证据）
 │
 └── 📝 变更记录
-    └── optimization_changelog_20260105.md     # 代码库优化变更说明
+    ├── optimization_changelog_20260105.md     # 代码库优化变更说明
+    └── optimization_changelog_20260630.md     # 猎手交易案例与 Loops 文档
 ```
 
 ---
@@ -136,6 +144,10 @@ P2：历史 KB / 教训 → 仅辅助，不替代设计
 - 设计稿路径 → AI 读取后开发
 - 数据字典 → AI 按字段开发 SQL
 - 教训库 → AI 自动避开踩过的坑
+
+**零运维扩展（量化/日频 pipeline 场景）：**
+- P0 由 pipeline 自动写 JSON（持仓、路由、验证进度）→ 用户不必交 model_csv
+- 详见 [`docs/04-agent-loops-zero-ops.md`](docs/04-agent-loops-zero-ops.md)
 
 ### 3. 门卫机制（自动纠错）
 
@@ -205,6 +217,7 @@ P2：历史 KB / 教训 → 仅辅助，不替代设计
 | 场景 | 优先建什么 | 参考文档 |
 |------|------------|----------|
 | 数据中台 / 数仓 | AGENTS + guard + hook | `AGENTS-企业数据平台.md` |
+| 量化 / 交易策略 | AGENTS + grill + health + pipeline | `README-trading-hunter.md` |
 | 后端 API / 微服务 | AGENTS + OpenAPI rule | `agent_setup_prompts_by_scenario.md` §4 |
 | 前端 / 全栈 | AGENTS + token rule | `agent_setup_prompts_by_scenario.md` §5 |
 | Code Review | Skill 即可 | `agent_setup_prompts_by_scenario.md` §6 |
@@ -228,6 +241,21 @@ P2：历史 KB / 教训 → 仅辅助，不替代设计
 - AI 开发效率提升 3-5x
 
 详见 `README-企业数据平台.md`
+
+### 猎手模拟交易（量化 / Agent 零运维）
+
+**改造前**：
+- 策略改动无烤机/健康检查，单测常被跳过
+- 展示层信号与执行门禁混淆
+- 主人被迫跑 accept、看复盘网页
+
+**改造后**：
+- P0 证据由日频 pipeline 写 JSON（portfolio、routing、phase1）
+- `strategy_grill` + `health_check` + `signal_postmortem` 四层 Loop
+- Cursor Hook + `agent_gate`（SCALE Shield 轻量版）拦截未烤机改码
+- `memory/lessons.md` 8 条 confirmed；主人仅收 BLOCKER 汇报
+
+详见 [`README-trading-hunter.md`](README-trading-hunter.md)
 
 ---
 
