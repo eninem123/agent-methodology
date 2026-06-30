@@ -259,11 +259,6 @@ mkdir -p .cursor/rules
 |------|------|
 | [awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules) | 3900+ 个 Cursor 规则文件 |
 | [Cursor 官方文档](https://docs.cursor.com/context/rules) | Project Rules 说明 |
-| [企业数据平台](https://github.com/eninem123/企业数据平台) | 本方法论的实战来源 |
-
-### 工程化落地
-
-本方法论解决「AI 应该怎么做」，[SCALE Engine](https://gitee.com/hongmaple/scale-engine) 解决「AI 不遵守怎么办」——它把治理规则变成 CLI 门禁、退出码拦截和证据文件，让约束不再只靠提示词自律。两者配合使用效果最佳。
 
 ---
 
